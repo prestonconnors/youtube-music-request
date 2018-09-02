@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Load jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css.css') }}">
+</head>
+  <body>
+    <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+    <div id="player"></div>
+    <div id="overlay">Visit ppcafe.net To Make A Request!</div>
+
+    <script>
+
+      var playingUrl = window.location.pathname + '/playing';
+      var nextUrl = window.location.pathname + '/next';
+      var skipUrl = window.location.pathname + '/skip';
+      var playingVideo;
+
+      var tag = document.createElement('script');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      var player;
+      var nextVideo;
+
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          videoId: '',
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          },
+          playerVars: {
+            'wmode': 'opaque',
+            'autoplay': 1,
+            'enablejsapi': 1,
+            'iv_load_policy': 0,
+            'modestbranding': 1,
+          }
+        });
+      }
+
+      function onPlayerReady(event) {
+        playNextVideo();
+      }
+
+      function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING) {
+          var url = new URL(player.getVideoUrl());
+          playingVideo = url.searchParams.get("v");
+          $.get(playingUrl + '/' + playingVideo, {});
+        }
+
+        if (event.data == YT.PlayerState.ENDED) {
+          playNextVideo();
+        }
+      }
+
+      function playNextVideo() {
+        $.getJSON(nextUrl, {
+        })
+        .done(function( json ) {
+          player.loadVideoById(json.video_id);
+          player.playVideo();
+        })
+      }
+
+      function skipVideo() {
+        $.getJSON(skipUrl + '/' + playingVideo, {
+        })
+        .done(function( json ) {
+          if (json.value == true) {
+            playNextVideo();
+          }
+        })
+      }
+
+
+
+      setInterval(function(){ skipVideo(); }, 5000);
+
+    </script>
+  </body>
+</html>

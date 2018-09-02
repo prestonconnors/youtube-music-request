@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+    {% block google_recaptcha %}
+    <!-- Load Google reCaptcha -->
+    <script src="{{ url_for('static', filename='toggle_submit_recaptcha.js') }}"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {% endblock %}
+
+    {% block content %}
+
+        <div data-role="content">
+            <form method="post">
+
+                {% for field in form %}
+
+                    {{ field.label }}
+                    {{ field }}
+
+                    {% if field.errors %}
+                        <font color="red">{{ field.errors|join( '<br>') }}</font>
+                    {% endif %}
+
+                    <br>
+
+                {% endfor %}
+
+                <div class="g-recaptcha" data-sitekey="6LdBt2AUAAAAANmmb9oJeaBA5EvtizFv4QBH8BOL" data-callback="enableSubmit" data-expired-callback="disableSubmit"></div>
+                <input type="submit" value="Register" id="submit">
+
+            </form>
+        </div>
+    {% endblock %}
+    {% block footer%}{% endblock %}
+
+    {% block google_maps_places_api %}
+    <!-- Load Google Maps Places API -->
+    <script src="{{ url_for('static', filename='google.maps.places.autocomplete.js') }}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoYYlLdMOojvQiVDD3Ds7a38evow_jKIw&libraries=places&callback=initAutocomplete" async defer></script>
+    {% endblock %}

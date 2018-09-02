@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+    {% block content %}
+
+        <div data-role="content">
+            <form method="post">
+
+                {% for field in form %}
+
+                    {{ field.label }}
+                    {{ field }}
+
+                    {% if field.errors %}
+                        <font color="red">{{ field.errors|join( '<br>') }}</font>
+                    {% endif %}
+
+                    <br>
+
+                {% endfor %}
+
+                <input type="submit" value="Continue" id="submit">
+
+            </form>
+        </div>
+    {% endblock %}
+    {% block footer%}{% endblock %}
+
+    {% block google_maps_places_api %}
+    <!-- Load Google Maps Places API -->
+    <script src="{{ url_for('static', filename='google.maps.places.autocomplete.js') }}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoYYlLdMOojvQiVDD3Ds7a38evow_jKIw&libraries=places&callback=initAutocomplete" async defer></script>
+    {% endblock %}

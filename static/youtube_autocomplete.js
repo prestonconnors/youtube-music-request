@@ -1,0 +1,49 @@
+$( document ).on( "pagecreate", function() {
+    $( "#autocomplete" ).on( "filterablebeforefilter", function ( e, data ) {
+        var $ul = $( this ),
+            $input = $( data.input ),
+            value = $input.val(),
+            html = "",
+            establishment_id = getCookie("establishment_id")
+            $ul.html( "" );
+        if ( value && value.length > 2 ) {
+            $ul.html( "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>" );
+            $ul.listview( "refresh" );
+            $.ajax({
+                url: "http://home.prestonconnors.com:8000/youtube_search/" + $input.val(),
+                dataType: "json",
+                crossDomain: true,
+                data: {
+                }
+            })
+            .then( function ( response ) {
+                $.each( response, function ( i, val ) {
+                    html += "<li>" + "<a href=\"/request/" + establishment_id + "/" + val["videoId"] + "\">" + val["title"] + "</a></li>";
+                });
+                $ul.html( html );
+                $ul.listview( "refresh" );
+                $ul.trigger( "updatelayout");
+            });
+        }
+    });
+});
+
+$.mobile.filterable.prototype.options.filterCallback = function( index, searchValue ) {
+    return false;
+};
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
