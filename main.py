@@ -15,6 +15,7 @@ from server.request.get_currently_playing import get_currently_playing
 from server.request.get_requests import get_requests
 from server.request.new_requester_id import new_requester_id
 from server.request.validate_request import validate_request
+from server.request.youtube_list import youtube_list
 
 APP = Flask(__name__)
 API = Api(APP)
@@ -60,6 +61,9 @@ def request_music():
     if 'establishment_id' in request.cookies:
         requests = get_requests(request.cookies['establishment_id'])
         currently_playing = get_currently_playing(request.cookies['establishment_id'])
+    elif 'pulsepicks.net' in request.headers['Host']:
+        requests = get_requests(1)
+        currently_playing = get_currently_playing(1)
     else:
         requests = None
         currently_playing = None
@@ -77,6 +81,8 @@ def request_music():
     if 'requester_id' not in request.cookies:
         response.set_cookie('requester_id', str(new_requester_id()), max_age=COOKIE_MAX_AGE)
         response.set_cookie('establishment_id', '0')
+    if 'pulsepicks.net' in request.headers['Host']:
+        response.set_cookie('establishment_id', '1')
     return response
 
 @APP.route('/request/<int:establishment_id>/<string:video_id>')
@@ -108,6 +114,40 @@ def submit_request(establishment_id, video_id):
 
     else:
         flash('No cookies set. Please ensure cookies are enabled!', 'error')
+
+    return redirect(url_for('request_music'))
+
+@APP.route('/skip/<int:establishment_id>/<string:video_id>')
+def skip(establishment_id, video_id):
+    """Skip the request."""
+
+    title = youtube_list([video_id])[0]['title']
+
+    session = db_session()
+    session.query(Request).filter_by(establishment_id=establishment_id,
+                                     video_id=video_id).\
+                                     update({'state': 3})
+    session.commit()
+    session.close()
+    message = u'Skipped {title}!'.format(title=title)
+    flash(message, 'success')
+
+    return redirect(url_for('request_music'))
+
+@APP.route('/ban/<int:establishment_id>/<string:video_id>')
+def ban(establishment_id, video_id):
+    """Ban the request."""
+
+    title = youtube_list([video_id])[0]['title']
+
+    session = db_session()
+    session.query(Request).filter_by(establishment_id=establishment_id,
+                                     video_id=video_id).\
+                                     update({'state': 4})
+    session.commit()
+    session.close()
+    message = u'Banned {title}!'.format(title=title)
+    flash(message, 'success')
 
     return redirect(url_for('request_music'))
 

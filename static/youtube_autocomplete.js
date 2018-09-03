@@ -10,7 +10,7 @@ $( document ).on( "pagecreate", function() {
             $ul.html( "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>" );
             $ul.listview( "refresh" );
             $.ajax({
-                url: "http://home.prestonconnors.com:8000/youtube_search/" + $input.val(),
+                url: "http://pulsepicks.net/youtube_search/" + $input.val(),
                 dataType: "json",
                 crossDomain: true,
                 data: {
@@ -18,7 +18,9 @@ $( document ).on( "pagecreate", function() {
             })
             .then( function ( response ) {
                 $.each( response, function ( i, val ) {
-                    html += "<li>" + "<a href=\"/request/" + establishment_id + "/" + val["videoId"] + "\"><img src=\"" + val["thumbnail"] + "\">" + val["title"] + "</a></li>";
+                    var artist = val["title"].split(" - ")[0],
+                        title = val["title"].split(" - ")[1];
+                    html += "<li>" + "<a href=\"/request/" + establishment_id + "/" + val["videoId"] + "\"><img src=\"" + val["thumbnail"] + "\">" + artist + "<p>" + title + "</p></a></li>";
                 });
                 $ul.html( html );
                 $ul.listview( "refresh" );
