@@ -1,4 +1,5 @@
 from server.db.get_establishment import get_establishment
+from server.request.banned import banned
 from server.request.request_amount import request_amount
 from server.request.already_requested import already_requested
 from server.request.recently_played import recently_played
@@ -19,6 +20,9 @@ def validate_request(requester_id, establishment_id, video_id):
 
     elif recently_played(establishment_id, video_id, establishment['repeat_limit']):
         return (False, u'{title} has played too recently!'.format(title=list_results['title']))
+
+    elif banned(establishment_id, video_id):
+        return (False, u'{title} has been banned!'.format(title=list_results['title']))
 
     elif list_results['duration'] > establishment['request_duration_limit']:
         return (False, u'{title}\'s duration is too long!'.format(title=list_results['title']))
