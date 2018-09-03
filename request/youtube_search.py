@@ -31,8 +31,10 @@ def youtube_search(query_term, safesearch, related_to=False):
     for item in response.json()['items']:
         video_id = item['id']['videoId']
         title = item['snippet']['title']
+        thumbnail = item['snippet']['thumbnails']['default']['url']
         results.append({'videoId': video_id,
-                        'title': title})
+                        'title': title,
+                        'thumbnail': thumbnail})
 
     return results
 

@@ -26,8 +26,10 @@ class YouTubeSearchAPI(Resource):
         for item in response.json()['items']:
             video_id = item['id']['videoId']
             title = item['snippet']['title']
+            thumbnail = item['snippet']['thumbnails']['default']['url']
             results.append({'videoId': video_id,
-                            'title': title})
+                            'title': title,
+                            'thumbnail': thumbnail})
 
         return jsonify(results)
 

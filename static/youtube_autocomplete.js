@@ -18,7 +18,7 @@ $( document ).on( "pagecreate", function() {
             })
             .then( function ( response ) {
                 $.each( response, function ( i, val ) {
-                    html += "<li>" + "<a href=\"/request/" + establishment_id + "/" + val["videoId"] + "\">" + val["title"] + "</a></li>";
+                    html += "<li>" + "<a href=\"/request/" + establishment_id + "/" + val["videoId"] + "\"><img src=\"" + val["thumbnail"] + "\">" + val["title"] + "</a></li>";
                 });
                 $ul.html( html );
                 $ul.listview( "refresh" );
