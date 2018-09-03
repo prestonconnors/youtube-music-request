@@ -35,6 +35,30 @@
                     </ul>
                 </div>
             {% endif %}
+
+            {% if currently_playing %}
+                <div id="skip-ban-music">
+                        <ul data-role="listview" data-inset="true">
+                            <li data-role="list-divider">Skip / Ban Music</li>
+                            <div data-role="collapsible">
+                                <img src="{{ currently_playing['thumbnail'] }}"><h2>{{ currently_playing['title'] }}</h2>
+                                <ul data-role="listview" data-inset="true">
+                                    <li><a href="/skip/1/{{ currently_playing['videoId'] }}">Skip</a></li>
+                                    <li><a href="/ban/1/{{ currently_playing['videoId'] }}">Ban</a></li>
+                                </ul>
+                            </div>
+                                {% for request in requests %}
+                                    <div data-role="collapsible">
+                                        <img src="{{ request['thumbnail'] }}"><h2>{{ request['title'] }}</h2>
+                                        <ul data-role="listview" data-inset="true">
+                                            <li><a href="/skip/1/{{ request['videoId'] }}">Skip</a></li>
+                                            <li><a href="/ban/1/{{ request['videoId'] }}">Ban</a></li>
+                                        </ul>
+                                    </div>
+                                {% endfor %}
+                        </ul>
+                </div>
+            {% endif %}
         </div>
 
     {% endblock %}
