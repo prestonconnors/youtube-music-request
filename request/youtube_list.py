@@ -1,6 +1,7 @@
 """YouTube Search API"""
 
 import requests
+import requests_cache
 
 from isodate import parse_duration
 
@@ -15,6 +16,7 @@ def youtube_list(video_ids):
                'part': 'contentDetails,snippet',
                'key': YOUTUBE_API_KEY,
               }
+    requests_cache.install_cache()
     response = requests.get('https://www.googleapis.com/youtube/v3/videos', params=payload)
 
     results = []

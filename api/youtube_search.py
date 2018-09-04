@@ -1,6 +1,7 @@
 """YouTube Search API"""
 
 import requests
+import requests_cache
 
 from flask import jsonify
 from flask_restful import Resource
@@ -21,6 +22,8 @@ class YouTubeSearchAPI(Resource):
                    'videoCategoryId': 10,
                    'videoEmbeddable': 'true'
                   }
+
+        requests_cache.install_cache()
         response = requests.get('https://www.googleapis.com/youtube/v3/search', params=payload)
         results = []
         for item in response.json()['items']:

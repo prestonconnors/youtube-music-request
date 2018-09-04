@@ -1,6 +1,7 @@
 """YouTube Search API"""
 
 import requests
+import requests_cache
 
 import server.keys
 
@@ -26,6 +27,7 @@ def youtube_search(query_term, safesearch, related_to=False):
                    'type': 'video'
                   }
 
+    requests_cache.install_cache()
     response = requests.get('https://www.googleapis.com/youtube/v3/search', params=payload)
     results = []
     for item in response.json()['items']:
