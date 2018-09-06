@@ -1,8 +1,8 @@
 from sqlalchemy import and_, exists
 
-from server.db.session import session as db_session
-from server.db.tables import Request
-from server.request.youtube_list import youtube_list
+from db.session import session as db_session
+from db.tables import Request
+from request.youtube_list import youtube_list
 
 
 def get_currently_playing(establishment_id):

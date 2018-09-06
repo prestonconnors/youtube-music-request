@@ -5,9 +5,9 @@ import requests_cache
 
 from isodate import parse_duration
 
-import server.keys
+import keys
 
-YOUTUBE_API_KEY = server.keys.YOUTUBE_API_KEY
+YOUTUBE_API_KEY = keys.YOUTUBE_API_KEY
 
 
 def youtube_list(video_ids):

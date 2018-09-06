@@ -1,10 +1,10 @@
-from server.db.get_establishment import get_establishment
-from server.request.banned import banned
-from server.request.request_amount import request_amount
-from server.request.already_requested import already_requested
-from server.request.recently_played import recently_played
-from server.request.youtube_list import youtube_list
-from server.request.youtube_search import youtube_search
+from db.get_establishment import get_establishment
+from request.banned import banned
+from request.request_amount import request_amount
+from request.already_requested import already_requested
+from request.recently_played import recently_played
+from request.youtube_list import youtube_list
+from request.youtube_search import youtube_search
 
 def validate_request(requester_id, establishment_id, video_id):
     """Validate if a request can be submitted."""

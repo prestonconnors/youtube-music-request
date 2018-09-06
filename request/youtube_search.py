@@ -3,9 +3,9 @@
 import requests
 import requests_cache
 
-import server.keys
+import keys
 
-YOUTUBE_API_KEY = server.keys.YOUTUBE_API_KEY
+YOUTUBE_API_KEY = keys.YOUTUBE_API_KEY
 
 def youtube_search(query_term, safesearch, related_to=False):
     """YouTube Search"""
