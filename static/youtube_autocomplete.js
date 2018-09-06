@@ -10,7 +10,7 @@ $( document ).on( "pagecreate", function() {
             $ul.html( "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>" );
             $ul.listview( "refresh" );
             $.ajax({
-                url: "http://pulsepicks.net/youtube_search/" + $input.val(),
+                url: "/youtube_search/" + $input.val(),
                 dataType: "json",
                 crossDomain: true,
                 data: {
