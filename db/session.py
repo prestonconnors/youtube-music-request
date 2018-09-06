@@ -5,6 +5,6 @@ from sqlalchemy.orm import sessionmaker
 
 def session():
     """Create database session."""
-    engine = create_engine('sqlite:////opt/server/server.db', echo=True)
+    engine = create_engine('sqlite:///server.db', echo=True)
     new_session = sessionmaker(bind=engine)
     return new_session()
