@@ -6,9 +6,9 @@ import requests_cache
 from flask import jsonify
 from flask_restful import Resource
 
-import server.keys
+import keys
 
-YOUTUBE_API_KEY = server.keys.YOUTUBE_API_KEY
+YOUTUBE_API_KEY = keys.YOUTUBE_API_KEY
 
 class YouTubeSearchAPI(Resource):
     """YouTube Search API"""

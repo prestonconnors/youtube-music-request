@@ -1,7 +1,7 @@
 from sqlalchemy import and_, exists
 
-from server.db.session import session as db_session
-from server.db.tables import Request
+from db.session import session as db_session
+from db.tables import Request
 
 
 def already_requested(establishment_id, video_id):

@@ -3,11 +3,11 @@
 from flask_restful import Resource
 from sqlalchemy import and_, exists
 
-from server.db.get_establishment import get_establishment
-from server.db.session import session as db_session
-from server.db.tables import Request
-from server.request.validate_request import validate_request
-from server.request.youtube_search import youtube_search
+from db.get_establishment import get_establishment
+from db.session import session as db_session
+from db.tables import Request
+from request.validate_request import validate_request
+from request.youtube_search import youtube_search
 
 from random import choice
 

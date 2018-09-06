@@ -4,8 +4,8 @@ from sqlalchemy.sql import exists
 import requests
 
 from wtforms import Form, BooleanField, IntegerField, SelectField, StringField, PasswordField, validators, ValidationError
-from server.db.session import session as db_session
-from server.db.tables import Establishment
+from db.session import session as db_session
+from db.tables import Establishment
 
 
 

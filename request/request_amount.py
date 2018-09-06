@@ -1,5 +1,5 @@
-from server.db.session import session as db_session
-from server.db.tables import Request
+from db.session import session as db_session
+from db.tables import Request
 
 
 def request_amount(requester_id):

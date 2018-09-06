@@ -2,27 +2,27 @@
 from flask import Flask, flash,  make_response, redirect, request, render_template, url_for
 from flask_restful import Api
 
-import server.keys
+import keys
 
-from server.db.get_establishment import get_establishment
-from server.db.session import session as db_session
-from server.db.tables import Establishment, Request
-from server.form.set_establishment import SetEstablishment
-from server.form.register import RegisterEstablishment, verify_recaptcha
-from server.api.player import PlayerAPI
-from server.api.youtube_search import YouTubeSearchAPI
-from server.request.get_currently_playing import get_currently_playing
-from server.request.get_requests import get_requests
-from server.request.new_requester_id import new_requester_id
-from server.request.validate_request import validate_request
-from server.request.youtube_list import youtube_list
+from db.get_establishment import get_establishment
+from db.session import session as db_session
+from db.tables import Establishment, Request
+from form.set_establishment import SetEstablishment
+from form.register import RegisterEstablishment, verify_recaptcha
+from api.player import PlayerAPI
+from api.youtube_search import YouTubeSearchAPI
+from request.get_currently_playing import get_currently_playing
+from request.get_requests import get_requests
+from request.new_requester_id import new_requester_id
+from request.validate_request import validate_request
+from request.youtube_list import youtube_list
 
 APP = Flask(__name__)
 API = Api(APP)
-APP.secret_key = server.keys.APP_SECRET_KEY
+APP.secret_key = keys.APP_SECRET_KEY
 
 PRODUCT_NAME = 'shitsnack'
-RECAPTCHA_SECRET = server.keys.RECAPTCHA_SECRET
+RECAPTCHA_SECRET = keys.RECAPTCHA_SECRET
 COOKIE_MAX_AGE = 60*60*3
 
 @APP.route('/register', methods=['GET', 'POST'])

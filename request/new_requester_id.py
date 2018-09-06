@@ -1,7 +1,7 @@
 from sqlalchemy.sql.expression import func
 
-from server.db.session import session as db_session
-from server.db.tables import Requester
+from db.session import session as db_session
+from db.tables import Requester
 
 
 def new_requester_id():
