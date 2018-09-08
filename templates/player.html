@@ -31,7 +31,8 @@
           videoId: '',
           events: {
             'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
+            'onStateChange': onPlayerStateChange,
+            'onError': onPlayerError
           },
           playerVars: {
             'wmode': 'opaque',
@@ -44,6 +45,13 @@
       }
 
       function onPlayerReady(event) {
+        playNextVideo();
+      }
+
+      function onPlayerError(event) {
+        var url = new URL(player.getVideoUrl());
+        playingVideo = url.searchParams.get("v");
+        $.get(playingUrl + '/' + playingVideo, {});
         playNextVideo();
       }
 
