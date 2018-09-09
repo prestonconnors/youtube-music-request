@@ -27,7 +27,7 @@ def youtube_search(query_term, safesearch, related_to=False):
                    'type': 'video'
                   }
 
-    requests_cache.install_cache()
+    requests_cache.install_cache(expire_after=86400)
     response = requests.get('https://www.googleapis.com/youtube/v3/search', params=payload)
     results = []
     for item in response.json()['items']:
