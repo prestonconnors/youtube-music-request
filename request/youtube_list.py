@@ -16,7 +16,7 @@ def youtube_list(video_ids):
                'part': 'contentDetails,snippet',
                'key': YOUTUBE_API_KEY,
               }
-    requests_cache.install_cache()
+    requests_cache.install_cache(expire_after=86400)
     response = requests.get('https://www.googleapis.com/youtube/v3/videos', params=payload)
 
     results = []
