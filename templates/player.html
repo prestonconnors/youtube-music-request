@@ -58,8 +58,10 @@
       function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING) {
           var url = new URL(player.getVideoUrl());
-          playingVideo = url.searchParams.get("v");
-          $.get(playingUrl + '/' + playingVideo, {});
+          if (url.searchParams.get("v") != playingVideo) {
+            playingVideo = url.searchParams.get("v");
+            $.get(playingUrl + '/' + playingVideo, {});
+          }
         }
 
         if (event.data == YT.PlayerState.ENDED) {
