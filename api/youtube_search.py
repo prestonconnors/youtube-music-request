@@ -23,7 +23,7 @@ class YouTubeSearchAPI(Resource):
                    'videoEmbeddable': 'true'
                   }
 
-        requests_cache.install_cache(expire_after=86400)
+        requests_cache.install_cache('youtube_search', expire_after=86400)
         response = requests.get('https://www.googleapis.com/youtube/v3/search', params=payload)
         results = []
         for item in response.json()['items']:
