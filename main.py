@@ -12,6 +12,7 @@ from form.register import RegisterEstablishment, verify_recaptcha
 from api.player import PlayerAPI
 from api.youtube_search import YouTubeSearchAPI
 from request.get_currently_playing import get_currently_playing
+from request.get_all_requests import get_all_requests
 from request.get_requests import get_requests
 from request.new_requester_id import new_requester_id
 from request.validate_request import validate_request
@@ -169,6 +170,17 @@ def set_establishment():
                                page_name='Establishment',
                                form=SetEstablishment())
 
+@APP.route('/requests/<int:establishment_id>')
+def requests(establishment_id):
+    """List Requests"""
+    all_requests = get_all_requests(establishment_id)
+    all_requests.sort(key=lambda k: k['title'])
+
+    return render_template('requests.html',
+                           product_name=PRODUCT_NAME,
+                           page_name='Requests',
+                           establishment_id=establishment_id,
+                           requests=all_requests)
 
 @APP.route('/player/<int:establishment_id>')
 def player(establishment_id):
