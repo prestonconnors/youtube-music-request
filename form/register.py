@@ -48,11 +48,16 @@ class RegisterEstablishment(Form): # pylint: disable=R0903
     request_duration_limit = IntegerField('Maximum Length Of A Request In Seconds',
                                           [validators.required()],
                                           default=600)
-    safesearch = SelectField('Filter Out Mature Content',
-                             choices=[('none', 'No Filter'),
+    requester_safesearch = SelectField('Filter Out Mature Content When People Make Requests',
+                                       choices=[('none', 'No Filter'),
+                                                ('moderate', 'Moderate Filter'),
+                                                ('strict', 'Strict Filter')],
+                                       default='moderate')
+    autoplay_safesearch = SelectField('Filter Out Mature Content When Music Is Randomly Selected',
+                                      choices=[('none', 'No Filter'),
                                       ('moderate', 'Moderate Filter'),
                                       ('strict', 'Strict Filter')],
-                             default='moderate')
+                                      default='moderate')
     tos_message = 'To use this service you must accept the Terms of Service.'
     tos_accepted = BooleanField('I have read and accept the Terms of Service.',
                                 [validators.AnyOf([True], message=tos_message)])
