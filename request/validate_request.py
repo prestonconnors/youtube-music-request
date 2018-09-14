@@ -10,6 +10,7 @@ def validate_request(requester_id, establishment_id, video_id):
     """Validate if a request can be submitted."""
     establishment = get_establishment(establishment_id)
     list_results = youtube_list([video_id])[0]
+
     if requester_id == 0:
         safesearch = establishment['autoplay_safesearch']
     else:
