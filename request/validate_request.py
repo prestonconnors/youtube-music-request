@@ -33,6 +33,9 @@ def validate_request(requester_id, establishment_id, video_id):
     elif list_results['duration'] > establishment['request_duration_limit']:
         return (False, u'{title}\'s duration is too long!'.format(title=list_results['title']))
 
+    elif list_results['definition'] != 'hd' and requester_id == 0:
+        return (False, u'{title} is not in HD!'.format(title=list_results['title']))
+
     elif video_id not in [_['videoId'] for _ in search_results]:
         return (False, u'{title} contains mature content!'.format(title=list_results['title']))
 

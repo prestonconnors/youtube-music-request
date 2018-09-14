@@ -25,10 +25,12 @@ def youtube_list(video_ids):
         title = item['snippet']['title']
         duration = parse_duration(item['contentDetails']['duration']).total_seconds()
         thumbnail = item['snippet']['thumbnails']['default']['url']
+        definition = item['contentDetails']['definition']
         results.append({'videoId': video_id,
                         'title': title,
                         'duration': duration,
-                        'thumbnail': thumbnail})
+                        'thumbnail': thumbnail,
+                        'definition': definition})
     return results
 
 
