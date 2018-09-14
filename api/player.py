@@ -44,7 +44,7 @@ class PlayerAPI(Resource):
                     valid, message = validate_request(0, establishment_id, video_id)
                     if not valid:
                         video_id = choice(youtube_search(video_id,
-                                                         establishment['safesearch'],
+                                                         establishment['autoplay_safesearch'],
                                                          related_to=True))['videoId']
                         valid, message = validate_request(0, establishment_id, video_id)
                     print(valid, message)

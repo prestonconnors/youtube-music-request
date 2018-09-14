@@ -14,7 +14,8 @@ class Establishment(declarative_base()): # pylint: disable=R0903
     request_limit = Column(Integer)
     repeat_limit = Column(Integer)
     request_duration_limit = Column(Integer)
-    safesearch = Column(String)
+    requester_safesearch = Column(String)
+    autoplay_safesearch = Column(String)
     confirm = None
     tos_accepted = Column(Boolean)
 

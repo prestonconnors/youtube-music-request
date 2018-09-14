@@ -10,7 +10,12 @@ def validate_request(requester_id, establishment_id, video_id):
     """Validate if a request can be submitted."""
     establishment = get_establishment(establishment_id)
     list_results = youtube_list([video_id])[0]
-    search_results = youtube_search(list_results['title'], establishment['safesearch'])
+    if requester_id == 0:
+        safesearch = establishment['autoplay_safesearch']
+    else:
+        safesearch = establishment['requester_safesearch']
+
+    search_results = youtube_search(list_results['title'], safesearch)
 
     if request_amount(requester_id) >= establishment['request_limit'] and requester_id != 0:
         return (False, u'Wait until one of your requests play before submitting another request!')
