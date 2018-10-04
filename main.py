@@ -125,9 +125,10 @@ def skip(establishment_id, video_id):
     title = youtube_list([video_id])[0]['title']
 
     session = db_session()
-    session.query(Request).filter_by(establishment_id=establishment_id,
-                                     video_id=video_id).\
-                                     update({'state': 3})
+    session.query(Request).filter(Request.establishment_id == establishment_id,
+                                  Request.video_id == video_id,
+                                  Request.state.in_((0, 1)))\
+                                  .update({'state': 3}, synchronize_session=False)
     session.commit()
     session.close()
     message = u'Skipped {title}!'.format(title=title)
@@ -142,9 +143,9 @@ def ban(establishment_id, video_id):
     title = youtube_list([video_id])[0]['title']
 
     session = db_session()
-    session.query(Request).filter_by(establishment_id=establishment_id,
-                                     video_id=video_id).\
-                                     update({'state': 4})
+    session.query(Request).filter(Request.establishment_id == establishment_id,
+                                  Request.video_id == video_id)\
+                                  .update({'state': 4}, synchronize_session=False)
     session.commit()
     session.close()
     message = u'Banned {title}!'.format(title=title)
