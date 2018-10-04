@@ -58,12 +58,16 @@ class PlayerAPI(Resource):
                 session.commit()
 
         elif action == 'skip':
-            value = session.query(exists()\
-                           .where(and_(Request.establishment_id == establishment_id,
-                                       Request.video_id == video_id,
-                                       Request.state.in_([3, 4]))))\
+            state = session.query(Request.state)\
+                           .filter_by(establishment_id=establishment_id, video_id=video_id)\
+                           .order_by(Request.requested_time.desc())\
+                           .limit(1)\
                            .scalar()
 
+            if state not in [3, 4]:
+                value = False
+            else:
+                value = True
 
         session.commit()
         session.close()
