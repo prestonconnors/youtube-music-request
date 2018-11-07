@@ -41,7 +41,6 @@ class PlayerAPI(Resource):
                 valid = False
                 while not valid:
                     video_id = choice([_[0] for _ in video_ids])
-                    print(video_id)
                     valid, message = validate_request(0, establishment_id, video_id)
                     if not valid:
                         results = youtube_search(video_id,
