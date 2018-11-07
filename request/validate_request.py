@@ -18,8 +18,10 @@ def validate_request(requester_id, establishment_id, video_id):
 
     if requester_id == 0:
         safesearch = establishment['autoplay_safesearch']
+        repeat_limit = establishment['repeat_limit']*5
     else:
         safesearch = establishment['requester_safesearch']
+        repeat_limit = establishment['repeat_limit']
 
     search_results = youtube_search(list_results['title'], safesearch)
 
@@ -29,7 +31,7 @@ def validate_request(requester_id, establishment_id, video_id):
     elif already_requested(establishment_id, video_id):
         return (False, u'{title} is currently requested!'.format(title=list_results['title']))
 
-    elif recently_played(establishment_id, video_id, establishment['repeat_limit']):
+    elif recently_played(establishment_id, video_id, repeat_limit):
         return (False, u'{title} has played too recently!'.format(title=list_results['title']))
 
     elif banned(establishment_id, video_id):
