@@ -9,7 +9,12 @@ from request.youtube_search import youtube_search
 def validate_request(requester_id, establishment_id, video_id):
     """Validate if a request can be submitted."""
     establishment = get_establishment(establishment_id)
-    list_results = youtube_list([video_id])[0]
+    list_results = youtube_list([video_id])
+
+    if not list_results:
+        return (False, u'{video_id} contains no YouTube data!'.format(video_id=video_id))
+    else:
+        list_results = list_results[0]
 
     if requester_id == 0:
         safesearch = establishment['autoplay_safesearch']

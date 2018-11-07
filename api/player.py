@@ -41,14 +41,15 @@ class PlayerAPI(Resource):
                 valid = False
                 while not valid:
                     video_id = choice([_[0] for _ in video_ids])
+                    print(video_id)
                     valid, message = validate_request(0, establishment_id, video_id)
                     if not valid:
-                        video_id = choice(youtube_search(video_id,
-                                                         establishment['autoplay_safesearch'],
-                                                         related_to=True))['videoId']
-                        valid, message = validate_request(0, establishment_id, video_id)
-                    print(valid, message)
-
+                        results = youtube_search(video_id,
+                                                 establishment['autoplay_safesearch'],
+                                                 related_to=True)
+                        if results:
+                            video_id = choice(results)['videoId']
+                            valid, message = validate_request(0, establishment_id, video_id)
 
                 session = db_session()
                 session.add(Request(establishment_id=establishment_id,
