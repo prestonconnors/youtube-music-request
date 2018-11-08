@@ -8,7 +8,10 @@
   <body>
     <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
     <div id="player"></div>
-    <div id="overlay">Visit pulsepicks.net To Make A Request!</div>
+    <div id="overlay">
+        <div id="overlay-1">Visit pulsepicks.net To Make A Request!</div>
+        <div id="overlay-2"></div>
+    </div>
 
     <script>
 
@@ -57,6 +60,7 @@
 
       function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING) {
+          document.getElementById("overlay-2").innerHTML = player.getVideoData().title;
           var url = new URL(player.getVideoUrl());
           if (url.searchParams.get("v") != playingVideo) {
             playingVideo = url.searchParams.get("v");
@@ -91,6 +95,19 @@
 
 
       setInterval(function(){ skipVideo(); }, 5000);
+
+    var divs = $('div[id^="overlay-"]').hide(),
+    i = 0;
+
+    (function cycle() { 
+
+        divs.eq(i).fadeIn(400)
+                  .delay(20000)
+                  .fadeOut(400, cycle);
+
+        i = ++i % divs.length;
+
+    })();
 
     </script>
   </body>
