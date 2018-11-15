@@ -1,12 +1,14 @@
 """Player API"""
 
 from flask_restful import Resource
+from random import sample
 from sqlalchemy import and_, exists
 
 from db.get_establishment import get_establishment
 from db.session import session as db_session
 from db.tables import Request
 from request.validate_request import validate_request
+from request.youtube_playlistitems import youtube_playlistitems
 from request.youtube_search import youtube_search
 
 from random import choice
@@ -35,12 +37,17 @@ class PlayerAPI(Resource):
 
             if not video_id:
                 establishment = get_establishment(establishment_id)
-                video_ids = session.query(Request.video_id).\
-                                    filter_by(establishment_id=establishment_id, state=2)
+                playlist_video_ids = youtube_playlistitems('PLBSQz25Ioz5Wo8KKaOLtpj224vD27_97P')
+                played_video_ids = session.query(Request.video_id).\
+                                           filter_by(establishment_id=establishment_id, state=2)
+                played_video_ids = [_[0] for _ in played_video_ids]
+                played_video_ids = sample(played_video_ids, int(len(playlist_video_ids) * .3))
+                video_ids = playlist_video_ids + played_video_ids
+                
 
                 valid = False
                 while not valid:
-                    video_id = choice([_[0] for _ in video_ids])
+                    video_id = choice(video_ids)
                     valid, message = validate_request(0, establishment_id, video_id)
                     if not valid:
                         results = youtube_search(video_id,
