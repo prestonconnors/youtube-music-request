@@ -19,6 +19,9 @@ class PlayerAPI(Resource):
         """GET call to API"""
         session = db_session()
         value = True
+        additional_request_information = {}
+        establishment = get_establishment(establishment_id)
+        establishment.pop('password', None)
 
         if action == 'playing':
             session.query(Request).filter_by(establishment_id=establishment_id,
@@ -29,14 +32,18 @@ class PlayerAPI(Resource):
                                              state=0).update({'state': 1})
 
         elif action == 'next':
-            video_id = session.query(Request.video_id)\
-                              .filter_by(establishment_id=establishment_id, state=0)\
-                              .order_by(Request.requested_time)\
-                              .limit(1)\
-                              .scalar()
+            row = session.query(Request)\
+                         .filter_by(establishment_id=establishment_id, state=0)\
+                         .order_by(Request.requested_time)\
+                         .first()
 
-            if not video_id:
-                establishment = get_establishment(establishment_id)
+            if row:
+                request = {c.name: getattr(row, c.name) for c in row.__table__.columns}
+                if row.additional_request_information:
+                    additional_request_information = {c.name: getattr(row.additional_request_information, c.name) for c in row.additional_request_information.__table__.columns}
+                video_id = request['video_id']
+
+            else:
                 playlist_video_ids = youtube_playlistitems('PLBSQz25Ioz5Wo8KKaOLtpj224vD27_97P')
                 played_video_ids = session.query(Request.video_id).\
                                            filter_by(establishment_id=establishment_id, state=2)
@@ -78,8 +85,13 @@ class PlayerAPI(Resource):
 
         session.commit()
         session.close()
-        return {'establishment_id': establishment_id,
-                'action': action,
-                'value': value,
-                'video_id': video_id,
-                'status': 'OK'}
+        response = self.merge_two_dicts(establishment, additional_request_information)
+        response = self.merge_two_dicts(response, {'action': action, 'value': value, 'video_id': video_id, 'status': 'OK'})
+        
+        return response
+
+    def merge_two_dicts(self, x, y):
+        z = x.copy()   # start with x's keys and values
+        z.update(y)    # modifies z with y's keys and values & returns None
+        return z
+

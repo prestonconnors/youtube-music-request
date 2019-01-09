@@ -21,7 +21,11 @@
 
             </div>
             <div id="search">
-                <strong>Request Music</strong>
+                {% if establishment["mode"] == "karaoke" %}
+                    <strong>Request Karaoke</strong>
+                {% else %}
+                     <strong>Request Music</strong>
+                {% endif %}
                 <form class="ui-filterable">
                     <input id="autocomplete-input" data-type="search" placeholder="Start typing artist and song...">
                 </form>
@@ -78,6 +82,11 @@
             <div ="contact">
                 Bugs, ideas, comments? <a href="slack://user?team=UCVB1Q89G&id=DBQGA6RMY">Message Preston!</a>
             </div>
+            {% if establishment["mode"] == "karaoke" %}
+                <input type="hidden" id="karaoke" value="true">
+            {% else %}
+                <input type="hidden" id="karaoke" value="false">
+            {% endif %}
         </div>
 
     {% endblock %}

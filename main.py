@@ -6,7 +6,8 @@ import keys
 
 from db.get_establishment import get_establishment
 from db.session import session as db_session
-from db.tables import Establishment, Request
+from db.tables import Establishment, Request, AdditionalRequestInformation
+from form.additional_request_information import SetAdditionalRequestInformation
 from form.set_establishment import SetEstablishment
 from form.register import RegisterEstablishment, verify_recaptcha
 from api.player import PlayerAPI
@@ -62,22 +63,28 @@ def request_music():
     if 'establishment_id' in request.cookies:
         requests = get_requests(request.cookies['establishment_id'])
         currently_playing = get_currently_playing(request.cookies['establishment_id'])
+        establishment = get_establishment(request.cookies['establishment_id'])
     elif 'pulsepicks.net' in request.headers['Host']:
         requests = get_requests(1)
         currently_playing = get_currently_playing(1)
+        establishment = get_establishment(1)
     else:
         requests = None
         currently_playing = None
+        establishment = None
 
-
+    if 'mode' in establishment:
+        if establishment['mode'] == 'karaoke':
+            page_name = 'Request Karaoke'
+        else:
+            page_name = 'Request Music'
     response = make_response(render_template('request_music.html',
                                              product_name=PRODUCT_NAME,
-                                             page_name='Request Music',
+                                             page_name=page_name,
                                              currently_playing=currently_playing,
                                              requests=requests,
+                                             establishment=establishment,
                                              cookies=request.cookies))
-
-
 
     if 'requester_id' not in request.cookies:
         response.set_cookie('requester_id', str(new_requester_id()), max_age=COOKIE_MAX_AGE)
@@ -95,21 +102,25 @@ def submit_request(establishment_id, video_id):
             response = make_response(redirect(url_for('set_establishment')))
             response.set_cookie('video_id', video_id)
             return response
-        
+
         request_valid, message = validate_request(request.cookies['requester_id'],
                                                   establishment_id,
                                                   video_id)
 
         if request_valid:
-            session = db_session()
-            session.add(Request(establishment_id=establishment_id,
-                                requester_id=request.cookies['requester_id'],
-                                video_id=video_id,
-                                state=0))
-            session.commit()
-            session.close()
-            flash(message, 'success')
+            if get_establishment(establishment_id)['mode'] in ['karaoke']:
+                flash(message, 'success')
+                return redirect(url_for('additional_request_information', establishment_id=establishment_id, video_id=video_id))
 
+            else:
+                session = db_session()
+                session.add(Request(establishment_id=establishment_id,
+                                    requester_id=request.cookies['requester_id'],
+                                    video_id=video_id,
+                                    state=0))
+                session.commit()
+                session.close()
+                flash(message, 'success')
         else:
             flash(message, 'error')
 
@@ -117,6 +128,46 @@ def submit_request(establishment_id, video_id):
         flash('No cookies set. Please ensure cookies are enabled!', 'error')
 
     return redirect(url_for('request_music'))
+
+@APP.route('/additional_request_information/<int:establishment_id>/<string:video_id>', methods=['GET', 'POST'])
+def additional_request_information(establishment_id, video_id):
+    """Add additional request information."""
+    if request.method == 'POST':
+
+        form = SetAdditionalRequestInformation(request.form)
+
+        if form.validate():
+            session = db_session()
+            record = Request(establishment_id=establishment_id,
+                             requester_id=request.cookies['requester_id'],
+                             video_id=video_id,
+                             state=0)
+            session.add(record)
+            session.flush()
+            request_id = record.id
+            session.add(AdditionalRequestInformation(request_id=request_id, **form.data))
+            current_request_made_by_human = session.query(Request).filter(Request.establishment_id == establishment_id,
+                                                                 Request.state == 1,
+                                                                 Request.requester_id != 0).count()
+            if not current_request_made_by_human:
+                session.query(Request).filter(Request.establishment_id == establishment_id,
+                                              Request.state == 1)\
+                                             .update({'state': 3}, synchronize_session=False)
+            session.commit()
+            session.close()
+            return redirect(url_for('request_music'))
+
+        else:
+            return render_template('additional_request_information.html',
+                                   product_name=PRODUCT_NAME,
+                                   page_name='Additional Request Information',
+                                   form=form)
+
+    else:
+        return render_template('additional_request_information.html',
+                               PRODUCT_NAME=PRODUCT_NAME,
+                               page_name='Additional Request Information',
+                               form=SetAdditionalRequestInformation())
 
 @APP.route('/skip/<int:establishment_id>/<string:video_id>')
 def skip(establishment_id, video_id):
@@ -128,7 +179,7 @@ def skip(establishment_id, video_id):
     session.query(Request).filter(Request.establishment_id == establishment_id,
                                   Request.video_id == video_id,
                                   Request.state.in_((0, 1)))\
-                                  .update({'state': 3}, synchronize_session=False)
+                        .update({'state': 3}, synchronize_session=False)
     session.commit()
     session.close()
     message = u'Skipped {title}!'.format(title=title)
