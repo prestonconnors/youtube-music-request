@@ -9,8 +9,9 @@
     <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
     <div id="player"></div>
     <div id="overlay">
-        <div id="overlay-1">Visit pulsepicks.net To Make A Request!</div>
+        <div id="overlay-1"></div>
         <div id="overlay-2"></div>
+        <div id="overlay-3"></div>
     </div>
 
     <script>
@@ -19,6 +20,9 @@
       var nextUrl = window.location.pathname + '/next';
       var skipUrl = window.location.pathname + '/skip';
       var playingVideo;
+      var countdownVideoId = "rzfmZC3kg3M";
+      var performer;
+      var requested_by;
 
       var tag = document.createElement('script');
 
@@ -60,10 +64,51 @@
 
       function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.PLAYING) {
-          document.getElementById("overlay-2").innerHTML = player.getVideoData().title;
           var url = new URL(player.getVideoUrl());
           if (url.searchParams.get("v") != playingVideo) {
             playingVideo = url.searchParams.get("v");
+            if (playingVideo != countdownVideoId) {
+
+                if ((typeof performer == "undefined" || performer == '') && (typeof requested_by == "undefined" || requested_by == '')) {
+                    document.getElementById("overlay-2").innerHTML = player.getVideoData().title;
+                    document.getElementById("overlay-3").innerHTML = "Visit pulsepicks.net To Make A Request!";
+                }
+
+                else {
+
+                    if (player.getVideoData().title.includes(" - ")) {
+                        document.getElementById("overlay-2").innerHTML = performer + " - " + player.getVideoData().title.split(" - ")[1];
+                    }
+
+                    else {
+                        document.getElementById("overlay-2").innerHTML = performer + " performing " + player.getVideoData().title;
+                    }
+
+                    if (typeof requested_by == "undefined" || requested_by == '') {
+                      document.getElementById("overlay-3").innerHTML = document.getElementById("overlay-2").innerHTML;
+                    }
+
+                    else {
+                      document.getElementById("overlay-3").innerHTML = "Requested by " + requested_by;
+                    }
+
+                    performer = undefined;
+                    requested_by = undefined;
+                }
+            }   
+
+            else {
+                if (typeof performer == "undefined" || performer == '') {
+                  document.getElementById("overlay-1").innerHTML = "Time for karaoke!";
+                  document.getElementById("overlay-2").innerHTML = "Time for karaoke!";
+                  document.getElementById("overlay-3").innerHTML = "Time for karaoke!";
+                }
+                else {
+                  document.getElementById("overlay-1").innerHTML = "Calling up " + performer + " to perform!";
+                  document.getElementById("overlay-2").innerHTML = "Calling up " + performer + " to perform!";
+                  document.getElementById("overlay-3").innerHTML = "Calling up " + performer + " to perform!";
+                }
+            }
             $.get(playingUrl + '/' + playingVideo, {});
           }
         }
@@ -77,8 +122,17 @@
         $.getJSON(nextUrl, {
         })
         .done(function( json ) {
-          player.loadVideoById(json.video_id);
-          player.playVideo();
+            if (json.mode == "karaoke" && playingVideo != countdownVideoId && typeof json.performer != "undefined") {
+                if (typeof json.performer != "undefined") { performer = json.performer; }
+                if (typeof json.requested_by != "undefined") { requested_by = json.requested_by; }
+                player.loadVideoById(countdownVideoId);
+                player.playVideo();
+            }
+            else {
+                document.getElementById("overlay-1").innerHTML = "Visit pulsepicks.net To Make A Request!";
+                player.loadVideoById(json.video_id);
+                player.playVideo();
+              }
         })
       }
 
@@ -101,9 +155,12 @@
 
     (function cycle() { 
 
-        divs.eq(i).fadeIn(400)
-                  .delay(20000)
-                  .fadeOut(400, cycle);
+        delay = 7000;
+        fade = 400;
+
+        divs.eq(i).fadeIn(fade)
+                  .delay(delay)
+                  .fadeOut(fade, cycle);
 
         i = ++i % divs.length;
 

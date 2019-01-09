@@ -5,12 +5,19 @@ $( document ).on( "pagecreate", function() {
             value = $input.val(),
             html = "",
             establishment_id = getCookie("establishment_id")
+            extra_search_terms = [];
+            if (document.getElementById("karaoke").value == "true") {
+                extra_search_terms.push("karaoke");
+            }
+            if (extra_search_terms.length > 0) {
+                extra_search_terms.unshift("");
+            }
             $ul.html( "" );
         if ( value && value.length > 2 ) {
             $ul.html( "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>" );
             $ul.listview( "refresh" );
             $.ajax({
-                url: "/youtube_search/" + $input.val(),
+                url: "/youtube_search/" + $input.val() + extra_search_terms.join(" "),
                 dataType: "json",
                 crossDomain: true,
                 data: {
