@@ -8,11 +8,13 @@
 
         <div data-role="content">
             <form>
-                <label for="karaoke-mode">Karaoke Mode</label>
-                <select id="karaoke-mode" name="mode" data-role="flipswitch">
-                    <option selected="">Off</option>
-                    <option>On</option>
-                </select>
+                <div class="ui-field-contain">
+                    <label for="karaoke-mode">Karaoke Mode</label>
+                    <select id="karaoke-mode" name="mode" data-role="flipswitch">
+                        <option selected="">Off</option>
+                        <option>On</option>
+                    </select>
+                </div>
             </form>
             <div id="flashed-messages">
                 {% with messages = get_flashed_messages(with_categories=true) %}

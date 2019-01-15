@@ -8,11 +8,7 @@ $( document ).on( "pagecreate", function() {
             extra_search_terms = [];
             mode = "regular";
             if ($("#karaoke-mode :selected").text() == "On") {
-                extra_search_terms.push("karaoke");
                 mode = "karaoke";
-            }
-            if (extra_search_terms.length > 0) {
-                extra_search_terms.unshift("");
             }
             $ul.html( "" );
         if ( value && value.length > 2 ) {
@@ -29,7 +25,13 @@ $( document ).on( "pagecreate", function() {
                 $.each( response, function ( i, val ) {
                     var artist = val["title"].split(" - ")[0],
                         title = val["title"].split(" - ")[1];
-                    html += "<li>" + "<a href=\"/request/" + establishment_id + "/" + mode + "/" + val["videoId"] + "\"><img src=\"" + val["thumbnail"] + "\">" + artist + "<p>" + title + "</p></a></li>";
+                    if (val["song_type"] == "karaoke" && mode == "regular") { display_result = 0; }
+                    else { display_result = 1; }
+                    if (display_result) {
+                        if (val["song_type"] == "karaoke") { html += "<li>" + "<a href=\"/request/" + establishment_id + "/" + mode + "/" + val["videoId"] + "\"><img src=\"" + val["thumbnail"] + "\"><p><b>Karaoke Version</b></p>" + artist + "<p>" + title + "</p></a></li>"; }
+                        else { html += "<li>" + "<a href=\"/request/" + establishment_id + "/" + mode + "/" + val["videoId"] + "\"><img src=\"" + val["thumbnail"] + "\">" + artist + "<p>" + title + "</p></a></li>"; }
+                    }
+                    
                 });
                 $ul.html( html );
                 $ul.listview( "refresh" );
