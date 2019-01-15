@@ -8,10 +8,19 @@ from request.youtube_list import youtube_list
 def get_requests(establishment_id):
     """See if video was already requested."""
     session = db_session()
-    results = session.query(Request.video_id).\
-                            filter(Request.establishment_id == establishment_id,
-                                   Request.state == 0)
+    db_results = session.query(Request).\
+                         filter(Request.establishment_id == establishment_id,
+                                Request.state == 0)
     session.close()
 
-    video_ids = [_[0]  for _ in results]
-    return youtube_list(video_ids)
+    youtube_results = youtube_list([_.video_id  for _ in db_results])
+
+    results = []
+
+    for db_result in db_results:
+        for youtube_result in youtube_results:
+            if db_result.video_id == youtube_result['videoId']:
+                db_result.youtube = youtube_result
+                results.append(db_result)
+
+    return results

@@ -73,11 +73,7 @@ def request_music():
         currently_playing = None
         establishment = None
 
-    if 'mode' in establishment:
-        if establishment['mode'] == 'karaoke':
-            page_name = 'Request Karaoke'
-        else:
-            page_name = 'Request Music'
+    page_name = 'Request Music'
     response = make_response(render_template('request_music.html',
                                              product_name=PRODUCT_NAME,
                                              page_name=page_name,
@@ -93,8 +89,8 @@ def request_music():
         response.set_cookie('establishment_id', '1')
     return response
 
-@APP.route('/request/<int:establishment_id>/<string:video_id>')
-def submit_request(establishment_id, video_id):
+@APP.route('/request/<int:establishment_id>/<string:mode>/<string:video_id>')
+def submit_request(establishment_id, mode, video_id):
     """Submits the request."""
 
     if 'requester_id' in request.cookies:
@@ -108,7 +104,7 @@ def submit_request(establishment_id, video_id):
                                                   video_id)
 
         if request_valid:
-            if get_establishment(establishment_id)['mode'] in ['karaoke']:
+            if mode in ['karaoke']:
                 flash(message, 'success')
                 return redirect(url_for('additional_request_information', establishment_id=establishment_id, video_id=video_id))
 
