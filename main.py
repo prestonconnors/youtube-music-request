@@ -12,6 +12,7 @@ from form.set_establishment import SetEstablishment
 from form.register import RegisterEstablishment, verify_recaptcha
 from api.player import PlayerAPI
 from api.youtube_search import YouTubeSearchAPI
+from request.calculate_yei_points import calculate_yei_points
 from request.get_currently_playing import get_currently_playing
 from request.get_all_requests import get_all_requests
 from request.get_requests import get_requests
@@ -133,6 +134,11 @@ def additional_request_information(establishment_id, video_id):
         form = SetAdditionalRequestInformation(request.form)
 
         if form.validate():
+            with open("/tmp/yei", "a") as yei_file:
+                points = calculate_yei_points()
+                yei_file.write('{points},{form_data}\n'.format(points=points, form_data=str(form.data)))
+                flash('{points} YEI points will be given to {performer}!'.format(points=points, performer=str(form.performer.data)), 'success')
+            calculate_yei_points()
             session = db_session()
             record = Request(establishment_id=establishment_id,
                              requester_id=request.cookies['requester_id'],

@@ -7,6 +7,7 @@ from sqlalchemy import and_, exists
 from db.get_establishment import get_establishment
 from db.session import session as db_session
 from db.tables import Request
+from request.calculate_yei_points import calculate_yei_points
 from request.get_requests import get_requests
 from request.validate_request import validate_request
 from request.youtube_playlistitems import youtube_playlistitems
@@ -96,6 +97,9 @@ class PlayerAPI(Resource):
                 youtube = requests[0].youtube
             else:
                 value = False
+
+        elif action == 'yei':
+            value = calculate_yei_points()
 
         session.commit()
         session.close()
