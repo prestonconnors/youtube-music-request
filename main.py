@@ -137,8 +137,7 @@ def additional_request_information(establishment_id, video_id):
             with open("/tmp/yei", "a") as yei_file:
                 points = calculate_yei_points()
                 yei_file.write('{points},{form_data}\n'.format(points=points, form_data=str(form.data)))
-                flash('{points} YEI points will be given to {performer}!'.format(points=points, performer=str(form.performer.data)), 'success')
-            calculate_yei_points()
+                # flash('{points} YEI points will be given to {performer}!'.format(points=points, performer=str(form.performer.data)), 'success')
             session = db_session()
             record = Request(establishment_id=establishment_id,
                              requester_id=request.cookies['requester_id'],

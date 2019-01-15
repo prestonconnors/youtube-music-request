@@ -13,7 +13,7 @@
         <div id="overlay-2"></div>
         <div id="overlay-3"></div>
         <div id="overlay-4"></div>
-        <div id="overlay-5"></div>
+        <!-- <div id="overlay-5"></div> -->
     </div>
 
     <script>
@@ -109,8 +109,8 @@
                 document.getElementById("overlay-3").style.fontSize = "100%"
                 document.getElementById("overlay-4").style.top = "4.5%"
                 document.getElementById("overlay-4").style.fontSize = "100%"
-                document.getElementById("overlay-5").style.top = "4.5%"
-                document.getElementById("overlay-5").style.fontSize = "100%"
+                //document.getElementById("overlay-5").style.top = "4.5%"
+                //document.getElementById("overlay-5").style.fontSize = "100%"
 
             }   
 
@@ -120,7 +120,7 @@
                   document.getElementById("overlay-2").innerHTML = "Time for karaoke!";
                   document.getElementById("overlay-3").innerHTML = "Time for karaoke!";
                   document.getElementById("overlay-4").innerHTML = "Time for karaoke!";
-                  document.getElementById("overlay-5").innerHTML = "Time for karaoke!";
+                  //document.getElementById("overlay-5").innerHTML = "Time for karaoke!";
                 }
                 else {
                   document.getElementById("overlay-1").style.top = "50%"
@@ -131,13 +131,13 @@
                   document.getElementById("overlay-3").style.fontSize = "375%"
                   document.getElementById("overlay-4").style.top = "50%"
                   document.getElementById("overlay-4").style.fontSize = "375%"
-                  document.getElementById("overlay-5").style.top = "50%"
-                  document.getElementById("overlay-5").style.fontSize = "375%"
+                  //document.getElementById("overlay-5").style.top = "50%"
+                  //document.getElementById("overlay-5").style.fontSize = "375%"
                   document.getElementById("overlay-1").innerHTML = "Calling up " + performer + " to perform!";
                   document.getElementById("overlay-2").innerHTML = "Calling up " + performer + " to perform!";
                   document.getElementById("overlay-3").innerHTML = "Calling up " + performer + " to perform!";
                   document.getElementById("overlay-4").innerHTML = "Calling up " + performer + " to perform!";
-                  document.getElementById("overlay-5").innerHTML = "Calling up " + performer + " to perform!";
+                  //document.getElementById("overlay-5").innerHTML = "Calling up " + performer + " to perform!";
                 }
             }
             $.get(playingUrl + '/' + playingVideo, {});
@@ -203,7 +203,7 @@
 
       setInterval(function(){ skipVideo(); }, 5000);
       setInterval(function(){ requests(); }, 5000);
-      setInterval(function(){ yei(); }, 5000);
+      //setInterval(function(){ yei(); }, 5000);
 
     var divs = $('div[id^="overlay-"]').hide(),
     i = 0;
