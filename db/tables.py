@@ -33,7 +33,7 @@ class Request(Base): # pylint: disable=R0903
     video_id = Column(String)
     state = Column(Integer)
     requested_time = Column(String, default=func.now())
-    additional_request_information = relationship('AdditionalRequestInformation', uselist=False, back_populates="request")
+    additional_request_information = relationship('AdditionalRequestInformation', uselist=False, back_populates="request", lazy='subquery')
 
 class Requester(Base): # pylint: disable=R0903
     """Requester table."""
@@ -52,4 +52,4 @@ class AdditionalRequestInformation(Base): # pylint: disable=R0903
     dedicated_to = Column(String, default=None)
     performer = Column(String, default=None)
     requested_time = Column(String, default=func.now())
-    request = relationship('Request', back_populates='additional_request_information')
+    request = relationship('Request', back_populates='additional_request_information', lazy='subquery')

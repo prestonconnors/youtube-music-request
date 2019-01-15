@@ -7,6 +7,7 @@ from sqlalchemy import and_, exists
 from db.get_establishment import get_establishment
 from db.session import session as db_session
 from db.tables import Request
+from request.get_requests import get_requests
 from request.validate_request import validate_request
 from request.youtube_playlistitems import youtube_playlistitems
 from request.youtube_search import youtube_search
@@ -20,6 +21,7 @@ class PlayerAPI(Resource):
         session = db_session()
         value = True
         additional_request_information = {}
+        youtube = {}
         establishment = get_establishment(establishment_id)
         establishment.pop('password', None)
 
@@ -83,9 +85,22 @@ class PlayerAPI(Resource):
             else:
                 value = True
 
+        elif action == 'requests':
+            requests =  get_requests(establishment_id)
+
+            if len(requests) > 0:
+                request = {c.name: getattr(requests[0], c.name) for c in requests[0].__table__.columns}
+                if requests[0].additional_request_information:
+                    additional_request_information = {c.name: getattr(requests[0].additional_request_information, c.name) for c in requests[0].additional_request_information.__table__.columns}
+
+                youtube = requests[0].youtube
+            else:
+                value = False
+
         session.commit()
         session.close()
         response = self.merge_two_dicts(establishment, additional_request_information)
+        response = self.merge_two_dicts(response, youtube)
         response = self.merge_two_dicts(response, {'action': action, 'value': value, 'video_id': video_id, 'status': 'OK'})
         
         return response

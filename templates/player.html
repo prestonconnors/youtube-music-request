@@ -12,6 +12,7 @@
         <div id="overlay-1"></div>
         <div id="overlay-2"></div>
         <div id="overlay-3"></div>
+        <div id="overlay-4"></div>
     </div>
 
     <script>
@@ -19,6 +20,7 @@
       var playingUrl = window.location.pathname + '/playing';
       var nextUrl = window.location.pathname + '/next';
       var skipUrl = window.location.pathname + '/skip';
+      var requestsUrl = window.location.pathname + '/requests';
       var playingVideo;
       var countdownVideoId = "rzfmZC3kg3M";
       var performer;
@@ -102,11 +104,13 @@
                   document.getElementById("overlay-1").innerHTML = "Time for karaoke!";
                   document.getElementById("overlay-2").innerHTML = "Time for karaoke!";
                   document.getElementById("overlay-3").innerHTML = "Time for karaoke!";
+                  document.getElementById("overlay-4").innerHTML = "Time for karaoke!";
                 }
                 else {
                   document.getElementById("overlay-1").innerHTML = "Calling up " + performer + " to perform!";
                   document.getElementById("overlay-2").innerHTML = "Calling up " + performer + " to perform!";
                   document.getElementById("overlay-3").innerHTML = "Calling up " + performer + " to perform!";
+                  document.getElementById("overlay-4").innerHTML = "Calling up " + performer + " to perform!";
                 }
             }
             $.get(playingUrl + '/' + playingVideo, {});
@@ -146,9 +150,23 @@
         })
       }
 
+      function requests() {
+        $.getJSON(requestsUrl, {
+        })
+        .done(function( json ) {
+          if (json.value == true) {
+            if (typeof json.performer != "undefined") { document.getElementById("overlay-4").innerHTML = "Up Next: " + json.performer + " Peforming " + json.title; }
+            else { document.getElementById("overlay-4").innerHTML = "Up Next: " + json.title; }
+          }
+          else { document.getElementById("overlay-4").innerHTML = "Make A Request And It Will Play Next!"; }
+          }
+        )
+      }
+
 
 
       setInterval(function(){ skipVideo(); }, 5000);
+      setInterval(function(){ requests(); }, 5000);
 
     var divs = $('div[id^="overlay-"]').hide(),
     i = 0;
